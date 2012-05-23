@@ -1,0 +1,26 @@
+#gallery {
+  height: 800px;
+  width: 890px;
+  border: 1px solid black; }
+  #gallery .big-pic {
+    height: 650px;
+    width: 890px;
+    background-color: black;
+    text-align: center; }
+    #gallery .big-pic img {
+      max-height: 650px;
+      max-width: 890px; }
+  #gallery .slider {
+    position: relative;
+    overflow: auto;
+    border-top: 1px solid black;
+    width: auto;
+    height: 150px;
+    white-space: nowrap; }
+    #gallery .slider img {
+      max-height: 150px;
+      border: solid 3px black;
+      border-top: none;
+      border-bottom: none; }
+      #gallery .slider img.selected-image {
+        border-color: white; }

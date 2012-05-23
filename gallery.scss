@@ -1,0 +1,40 @@
+// variables
+$gallery-height: 800px;
+$gallery-width: 890px;
+$thumb-height: 150px;
+
+#gallery {
+    height: $gallery-height;
+    width: $gallery-width;
+    border: 1px solid black;
+
+    .big-pic {
+        height: $gallery-height - $thumb-height;
+        width: $gallery-width;
+        background-color: black;
+        text-align: center;
+        img {
+            max-height: $gallery-height - $thumb-height;
+            max-width: $gallery-width;
+            }
+        }
+    
+    .slider {
+        position: relative;
+        overflow: auto;
+        border-top: 1px solid black;
+        width: auto;
+        height: $thumb-height;
+        white-space: nowrap;
+        
+        img {
+            max-height: $thumb-height;
+            border: solid 3px black;
+            border-top: none;
+            border-bottom: none;
+            &.selected-image {
+                border-color: white;
+                }
+            }
+        }
+    }
