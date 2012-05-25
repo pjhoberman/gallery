@@ -12,12 +12,12 @@
 // assume we have a list of images, from either manual input, class-targeted selection, or an api
 // attributes: full (required), thumb, title, link
 var images = [
-    {full: 'test_images/DSC_3786.jpg', 'title': 'abc', 'link': 'http://google.com'},
-    {full: 'test_images/DSC_3789.jpg', 'title': 'abc', 'link': 'http://google.com'},
-    {full: 'test_images/DSC_3791.jpg'},
-    {full: 'test_images/DSC_3795.jpg'},
-    {full: 'test_images/DSC_3801.jpg'},
-    {full: 'test_images/DSC_3805.jpg'}
+    {full: 'test_images/DSC_3786.jpg', 'thumb': 'test_images/DSC_3786.jpg','title': 'abc', 'link': 'http://google.com'},
+    {full: 'test_images/DSC_3789.jpg', 'thumb': 'test_images/DSC_3789.jpg','title': 'abc', 'link': 'http://google.com'},
+    {full: 'test_images/DSC_3791.jpg', 'thumb': 'test_images/DSC_3791.jpg'},
+    {full: 'test_images/DSC_3795.jpg', 'thumb': 'test_images/DSC_3795.jpg'},
+    {full: 'test_images/DSC_3801.jpg', 'thumb': 'test_images/DSC_3801.jpg'},
+    {full: 'test_images/DSC_3805.jpg', 'thumb': 'test_images/DSC_3805.jpg'}
 ];
 
 
