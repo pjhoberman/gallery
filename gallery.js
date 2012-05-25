@@ -1,11 +1,11 @@
 /* Todo:
  * preload images -- all the images? some of them?
  * make slider slide
- * if hashed image, make sure that image on the slider is visible
  * Check out scroll bars in various browsers
  * slideshow
  * make it possible to scroll left and right with a hover
  * style it up
+ * flickr api
 */
 
 
@@ -64,6 +64,10 @@ var Gallery = function () {
         } // for
 
         $('#gallery .slider img:eq(' + index + ')').addClass('selected-image');
+        
+        setTimeout(function(){
+                $('#gallery .slider').scrollLeft($('#gallery .slider .selected-image').offset()['left']);
+            }, 100);
 
         // bind the click
         $('#gallery .slider img').click(function(){
@@ -73,18 +77,16 @@ var Gallery = function () {
         });
 
         // slider craziness - not working right now, hovering on right isn't a consistent e.offsetX
-/*
-        $('#gallery .slider').mousemove(function(e){
-            var slider = $('#gallery .slider'); // cache this
-            console.log(e);
-            console.log(slider.width());
-            console.log(e.offsetX);
-            if(e.offsetX < (slider.width() * .25))
-                console.log( 'slide left' );
-            else if( e.offsetX > (slider.width() * .75))
-                console.log( 'slide right');
+        $('#gallery .slider').mousemove(function(e){    
+        
+            var position = getMousePosition(e),
+                slider = $('#gallery .slider');
+            
+            if(position[0] < (slider.width() * .25))
+                slider.scrollLeft(slider.scrollLeft() - 10);
+            else if( position[0] > (slider.width() * .75))
+                slider.scrollLeft(slider.scrollLeft() + 10);
         });
-*/
     };
 
     this.changeBigPic = function (img) {
@@ -102,6 +104,25 @@ var Gallery = function () {
             margin = Math.max(0, (max_height - image_height)/2);
 
         $('#gallery .big-pic img').css({marginTop:margin});
+    };
+    
+    var getMousePosition = function (e){
+        var posx = 0;
+    	var posy = 0;
+    	if (!e) var e = window.event;
+    	if (e.pageX || e.pageY) 	{
+    		posx = e.pageX;
+    		posy = e.pageY;
+    	}
+    	else if (e.clientX || e.clientY) 	{
+    		posx = e.clientX + document.body.scrollLeft
+    			+ document.documentElement.scrollLeft;
+    		posy = e.clientY + document.body.scrollTop
+    			+ document.documentElement.scrollTop;
+    	}
+    	// posx and posy contain the mouse position relative to the document
+    	// Do something with this information
+        return [posx, posy];
     };
 
 
