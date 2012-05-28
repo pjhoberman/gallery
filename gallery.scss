@@ -24,16 +24,20 @@ $thumb-height: 150px;
         overflow: auto;
         border-top: 1px solid black;
         width: auto;
-        height: $thumb-height;
+        height: $thumb-height + 10px;
         white-space: nowrap;
+        background-color: white;
         
         img {
             max-height: $thumb-height;
-            border: solid 3px black;
-            border-top: none;
+            border: solid 3px white;
+            /*
+border-top: none;
             border-bottom: none;
+*/
+            margin: 3px 1px;
             &.selected-image {
-                border-color: white;
+                border-color: black;
                 }
             }
         }
