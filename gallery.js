@@ -5,8 +5,12 @@
  * flickr api
  * wordpress gallery
  * don't use index - use something else to signify hashes, in case of api change
+ 
+ Flickr API Key: eb318894c92e5eccef25f8595ea38abe
+ Flickr API Secret: 7db43fc319f873ed
 */
 
+var gallery; // make this anon?
 
 // assume we have a list of images, from either manual input, class-targeted selection, or an api
 // attributes: full (required), thumb, title, link
@@ -25,10 +29,96 @@ var images = [
     {full: 'test_images/DSC_3805.jpg', 'thumb': 'test_images/DSC_3805.jpg'}
 ];
 
-
-var Gallery = function () {
+var Gallery = function (api_key, set_id) {
     "use strict";
     var _this = this;
+    this.set_id = set_id; // need this, not sure what to do without it yet.
+    this.api_key = api_key;
+    this.images = [];
+    
+    var flickr_api_url = "http://api.flickr.com/services/rest/?callback=?",
+        images_to_load = 0;
+    
+    this.flickrAPI = function () {
+        var qs = {
+                method: 'flickr.photosets.getPhotos',
+                api_key: this.api_key,
+                photoset_id: this.set_id,
+                format: 'json',
+                jsoncallback: 'gallery.setImages'
+                };     
+        
+        $.getJSON(flickr_api_url, qs);
+    }; // flickrAPI
+    
+    // allow for more than just flickr?
+    this.setImages = function (data) {
+        if( data.stat === "ok" ){
+            var imgs = data.photoset.photo,
+                i = 0;
+            images_to_load = imgs.length;
+            for( i; i<imgs.length; i++){
+                var qs = {
+                    method: 'flickr.photos.getSizes',
+                    api_key: this.api_key,
+                    photo_id: imgs[i].id,
+                    format: 'json',
+                    jsoncallback: 'gallery.addImage'
+                    };
+                this.images.push({id: imgs[i].id, title: imgs[i].title});
+                $.getJSON(flickr_api_url, qs);
+                
+            } // for
+        } else {
+            // ruh roh
+        }
+    }; // setImages    
+    
+    this.addImage = function(data){
+        //console.log(data);
+        if(data.stat === "ok"){
+            var i = 0,
+                j = 0,
+                id = data.sizes.size[0].url.match(/\d{1,}/)[0],
+                index, d;
+
+            // gotta be a better way to do this..
+            for(i; i<this.images.length;i++){
+                if(this.images[i].id === id)
+                    index = i;
+            } // for
+            
+            d = this.images[index];
+
+            for(j; j<data.sizes.size.length; j++){
+                if(data.sizes.size[j].label === "Thumbnail"){
+                    d.thumb = data.sizes.size[j].source;
+                }
+                
+                else if(data.sizes.size[j].label === "Medium 800") { // catch this if there isn't one and go bigger
+                    d.full = data.sizes.size[j].source;
+                }
+            } // for
+            
+        } // if
+        
+        this.checkForDoneLoading();
+    };
+    
+    this.checkForDoneLoading = function () {
+        // gotta be a better way
+        // this assumes every image loads... gotta be a better way!  
+        var i = 0,
+            c = 0;
+        for(i; i<this.images.length; i++){
+            if(this.images[i].full){
+                c++;
+            } // if
+        } // for
+        if( images_to_load === c )
+            this.createGallery();
+    }; // checkForDoneLoading
+    
     this.createGallery = function () {
         // create the general dom
         $('body').append('<div id="gallery"><div class="slideshow">Start Slideshow</div><div class="big-pic"></div><div class="slider"></div></div>');
@@ -43,15 +133,15 @@ var Gallery = function () {
             index = hash.length > 1 ? hash[1] : hash[0];
         }
 
-        $('#gallery .big-pic').append('<img src="' + images[index].full + '" />');
+        $('#gallery .big-pic').append('<img src="' + this.images[index].full + '" />');
         $('#gallery .big-pic img').one('load', centerBigPic); // look into delay on hashed images
 
 
         // grab the images
         // assumption: we have images
-        for (var i=0; i<images.length; i++) {
+        for (var i=0; i<this.images.length; i++) {
             // check for thumb, otherwise downsize original
-            var img = images[i],
+            var img = this.images[i],
                 thumb = img.thumb ? img.thumb : img.full,
                 el = $('<img src="' + thumb + '" />');
 
@@ -64,7 +154,7 @@ var Gallery = function () {
             if (img.link)
                 el.attr('data-link', img.link);
                 
-            el.attr('data-index', i);
+            el.attr('data-index', i).attr('data-full', img.full);
 
             $('#gallery .slider').append(el);
 
@@ -72,9 +162,10 @@ var Gallery = function () {
 
         $('#gallery .slider img:eq(' + index + ')').addClass('selected-image');
         
+        // better way?
         setTimeout(function(){
                 $('#gallery .slider').scrollLeft($('#gallery .slider .selected-image').offset()['left']);
-            }, 100);
+            }, 400);
 
         // bind the click
         $('#gallery .slider img').click(function(){
@@ -108,7 +199,7 @@ var Gallery = function () {
     this.changeBigPic = function (img) {
         // center vertically
         $('#gallery .big-pic img').fadeOut(function(){
-            $(this).attr('src', img.attr('src')).one('load', centerBigPic).fadeIn();
+            $(this).attr('src', img.attr('data-full')).one('load', centerBigPic).fadeIn();
         });
 
         // update the hash
@@ -182,12 +273,13 @@ var Gallery = function () {
     };
     
     // init functions
-    this.createGallery();
+    this.flickrAPI();
+    //this.createGallery();
 };
 
 $(function(){
     "use strict";
 
-    var gallery = new Gallery();
+    gallery = new Gallery('eb318894c92e5eccef25f8595ea38abe', '72157629928830926');
 
 }); // doc ready
