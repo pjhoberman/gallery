@@ -1,33 +1,15 @@
 /* Todo:
- * preload images -- all the images? some of them?
  * Check out scroll bars in various browsers
  * style it up
- * flickr api
  * wordpress gallery
  * don't use index - use something else to signify hashes, in case of api change
- 
- Flickr API Key: eb318894c92e5eccef25f8595ea38abe
- Flickr API Secret: 7db43fc319f873ed
+ * Check the comments for things to fix
+ * add a link to the big pic
 */
 
 var gallery; // make this anon?
 
-// assume we have a list of images, from either manual input, class-targeted selection, or an api
-// attributes: full (required), thumb, title, link
-var images = [
-    {full: 'test_images/DSC_3786.jpg', 'thumb': 'test_images/DSC_3786.jpg','title': 'abc', 'link': 'http://google.com'},
-    {full: 'test_images/DSC_3789.jpg', 'thumb': 'test_images/DSC_3789.jpg','title': 'abc', 'link': 'http://google.com'},
-    {full: 'test_images/DSC_3791.jpg', 'thumb': 'test_images/DSC_3791.jpg'},
-    {full: 'test_images/DSC_3795.jpg', 'thumb': 'test_images/DSC_3795.jpg'},
-    {full: 'test_images/DSC_3801.jpg', 'thumb': 'test_images/DSC_3801.jpg'},
-    {full: 'test_images/DSC_3805.jpg', 'thumb': 'test_images/DSC_3805.jpg'},
-    {full: 'test_images/DSC_3786.jpg', 'thumb': 'test_images/DSC_3786.jpg','title': 'abc', 'link': 'http://google.com'},
-    {full: 'test_images/DSC_3789.jpg', 'thumb': 'test_images/DSC_3789.jpg','title': 'abc', 'link': 'http://google.com'},
-    {full: 'test_images/DSC_3791.jpg', 'thumb': 'test_images/DSC_3791.jpg'},
-    {full: 'test_images/DSC_3795.jpg', 'thumb': 'test_images/DSC_3795.jpg'},
-    {full: 'test_images/DSC_3801.jpg', 'thumb': 'test_images/DSC_3801.jpg'},
-    {full: 'test_images/DSC_3805.jpg', 'thumb': 'test_images/DSC_3805.jpg'}
-];
+// attributes for images: full (required), thumb, title, link
 
 var Gallery = function (api_key, set_id) {
     "use strict";
@@ -75,7 +57,7 @@ var Gallery = function (api_key, set_id) {
     }; // setImages    
     
     this.addImage = function(data){
-        //console.log(data);
+
         if(data.stat === "ok"){
             var i = 0,
                 j = 0,
@@ -95,7 +77,7 @@ var Gallery = function (api_key, set_id) {
                     d.thumb = data.sizes.size[j].source;
                 }
                 
-                else if(data.sizes.size[j].label === "Medium 800") { // catch this if there isn't one and go bigger
+                else if(data.sizes.size[j].label === "Large") { // catch this if there isn't one and go bigger
                     d.full = data.sizes.size[j].source;
                 }
             } // for
@@ -117,6 +99,7 @@ var Gallery = function (api_key, set_id) {
         } // for
         if( images_to_load === c )
             this.createGallery();
+            preloadImages();
     }; // checkForDoneLoading
     
     this.createGallery = function () {
@@ -195,7 +178,14 @@ var Gallery = function (api_key, set_id) {
         // bind slideshow
         bindSlideshow();
     };
-
+    
+    // this might be too slow... and mean for mobile 
+    var preloadImages = function (){
+        for( var i=0; i<_this.images.length; i++){
+            $('<img/>').src = _this.images[i].full;
+        } // for
+    }; // preloadImages
+    
     this.changeBigPic = function (img) {
         // center vertically
         $('#gallery .big-pic img').fadeOut(function(){
@@ -248,16 +238,20 @@ var Gallery = function (api_key, set_id) {
     this.startSlideshow = function () {
         $('#gallery .slideshow').text('Stop Slideshow');
         
-        // start at 0
-        $('#gallery .slider').scrollLeft(0);
-        $('#gallery .slider img:first').click();
+        // preload the second image
+        $('<img/>').src = $('#gallery .slider img:eq(1)').attr('data-full');
+        
+        // start at 0 -- why?
+        // $('#gallery .slider').scrollLeft(0);
+        // $('#gallery .slider img:first').click();
         
         _this.slideshow = setInterval(function(){
             var next = $('#gallery .slider .selected-image').next();
-            console.log(next);
+
             if( next.length ){
                 next.click();
                 $('#gallery .slider').scrollLeft(next.offset()['left']);
+
             } else {
                 $('#gallery .slider img:first').click();
                 $('#gallery .slider').scrollLeft(0);
