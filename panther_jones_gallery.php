@@ -30,7 +30,7 @@ License: A "Slug" license name e.g. GPL2
 
 function panther_jones_gallery_dependencies(){
     wp_enqueue_script('panther_jones_gallery_script', plugins_url('gallery.js', __FILE__));
-    wp_enqueue_style('panther_jones_gallery_style', plugins_ur;('gallery.css', __FILE__));
+    wp_enqueue_style('panther_jones_gallery_style', plugins_url('gallery.css', __FILE__));
 }
 
 add_action('wp_enqueue_scripts', 'panther_jones_gallery_dependencies');
