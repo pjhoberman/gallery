@@ -34,7 +34,6 @@ function panther_jones_gallery_dependencies(){
 }
 
 add_action('wp_enqueue_scripts', 'panther_jones_gallery_dependencies');
-add_action('wp_enqueue_scripts', 'panther_jones_gallery_style');
 
 function panther_jones_gallery( $atts ){
 
