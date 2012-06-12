@@ -3,7 +3,17 @@ $gallery-height: 800px;
 $gallery-width: 890px;
 $thumb-height: 150px;
 
+// overrides
+
+.entry #gallery img {
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+}
+
 #gallery {
+
     height: $gallery-height;
     width: $gallery-width;
     border: 1px solid black;

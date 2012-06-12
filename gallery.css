@@ -1,3 +1,9 @@
+.entry #gallery img {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none; }
+
 #gallery {
   height: 800px;
   width: 890px;

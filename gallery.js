@@ -5,6 +5,10 @@
  * don't use index - use something else to signify hashes, in case of api change
  * Check the comments for things to fix
  * add a link to the big pic
+
+ * override css
+ * changing direction doesn't work well
+ * big arrow to move big picture? 
 */
 
 var gallery; // make this anon?
@@ -25,6 +29,7 @@ var Gallery = function (gallery_id) {
     this.source = this.gallery_id_jq.attr('data-source');
     this.api_key = this.gallery_id_jq.attr('data-api-key');
     this.set_id = this.gallery_id_jq.attr('data-set-id');
+    this.slideshow_speed = this.gallery_id_jq.attr('data-slideshow-speed');
 
     /* Options
         source - required. options are wordpress, flickr
@@ -283,7 +288,7 @@ var Gallery = function (gallery_id) {
                 jQuery('#gallery .slider img:first').click();
                 jQuery('#gallery .slider').scrollLeft(0);
             }
-        }, 3000); // make this a global var for settings
+        }, _this.slideshow_speed); // make this a global var for settings
     }; // startSlideshow
     
     this.stopSlideshow = function () {

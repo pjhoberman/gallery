@@ -42,7 +42,8 @@ function panther_jones_gallery( $atts ){
         'classes' => '',
         'source' => 'flickr',
         'api_key' => '',
-        'set_id' => ''
+        'set_id' => '',
+        'slideshow_speed' => '3000',
     ), $atts ) );
 
     $html = "<div 
@@ -51,6 +52,7 @@ function panther_jones_gallery( $atts ){
         data-source='$source' 
         data-api-key='$api_key'
         data-set-id='$set_id'
+        data-slideshow-speed='$slideshow_speed'
         ></div>";
 
     return $html;
