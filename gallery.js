@@ -11,30 +11,49 @@ var gallery; // make this anon?
 
 // attributes for images: full (required), thumb, title, link
 
-var Gallery = function (api_key, set_id) {
+var Gallery = function (options) {
     "use strict";
-    var _this = this;
-    this.set_id = set_id; // need this, not sure what to do without it yet.
-    this.api_key = api_key;
-    this.images = [];
-    
-    var flickr_api_url = "http://api.flickr.com/services/rest/?callback=?",
+    // options that were arguments before: api_key, set_id
+    var _this = this,
+        options = options,
         images_to_load = 0;
-    
-    this.flickrAPI = function () {
-        var qs = {
-                method: 'flickr.photosets.getPhotos',
-                api_key: this.api_key,
-                photoset_id: this.set_id,
-                format: 'json',
-                jsoncallback: 'gallery.setImages'
-                };     
+
+    /* Options
+        source - required. options are wordpress, flickr
+    */
+
+    this.images = [];
+
+    var flickr_api_url = "http://api.flickr.com/services/rest/?callback=?";
+
+    this.loadImages = function(){
+        if(options.source === "flickr"){
         
-        $.getJSON(flickr_api_url, qs);
-    }; // flickrAPI
+            
+            
+            // this.flickrAPI = function () {
+                console.log(options.flickr.api_key);
+                var qs = {
+                        method: 'flickr.photosets.getPhotos',
+                        api_key: options.flickr.api_key,
+                        photoset_id: options.flickr.set_id,
+                        format: 'json',
+                        jsoncallback: 'gallery.ajaxFlickrImages' // todo: this is an issue. 
+                        };     
+                
+                $.getJSON(flickr_api_url, qs);
+            // }; // flickrAPI
+        }
+
+        else if(options.source === "wordpress"){
+            // do stuff
+        }
+    }; // loadImages
     
     // allow for more than just flickr?
-    this.setImages = function (data) {
+    this.ajaxFlickrImages = function (data) {
+        
+
         if( data.stat === "ok" ){
             var imgs = data.photoset.photo,
                 i = 0;
@@ -42,10 +61,10 @@ var Gallery = function (api_key, set_id) {
             for( i; i<imgs.length; i++){
                 var qs = {
                     method: 'flickr.photos.getSizes',
-                    api_key: this.api_key,
+                    api_key: options.flickr.api_key,
                     photo_id: imgs[i].id,
                     format: 'json',
-                    jsoncallback: 'gallery.addImage'
+                    jsoncallback: 'gallery.addFlickrImage'
                     };
                 this.images.push({id: imgs[i].id, title: imgs[i].title});
                 $.getJSON(flickr_api_url, qs);
@@ -54,9 +73,9 @@ var Gallery = function (api_key, set_id) {
         } else {
             // ruh roh
         }
-    }; // setImages    
+    }; // ajaxFlickrImages    
     
-    this.addImage = function(data){
+    this.addFlickrImage = function(data){
 
         if(data.stat === "ok"){
             var i = 0,
@@ -85,7 +104,7 @@ var Gallery = function (api_key, set_id) {
         } // if
         
         this.checkForDoneLoading();
-    };
+    }; // addFlickrImage
     
     this.checkForDoneLoading = function () {
         // gotta be a better way
@@ -267,13 +286,20 @@ var Gallery = function (api_key, set_id) {
     };
     
     // init functions
-    this.flickrAPI();
+    this.loadImages();
     //this.createGallery();
 };
 
 $(function(){
     "use strict";
 
-    gallery = new Gallery('eb318894c92e5eccef25f8595ea38abe', '72157629928830926');
+    gallery = new Gallery(
+            {
+                "source":"flickr",
+                "flickr":{
+                    "api_key": "eb318894c92e5eccef25f8595ea38abe",
+                    "set_id": "72157629928830926"
+                }
+            });
 
 }); // doc ready
