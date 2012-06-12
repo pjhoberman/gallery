@@ -1,11 +1,12 @@
 <?php
+
 /*
-Plugin Name: Flickr Gallery
-Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
-Description: A brief description of the Plugin.
-Version: 0.1
-Author: PJ Hoberman
-Author URI: http://URI_Of_The_Plugin_Author
+    Plugin Name: Panther Jones Photo Gallery
+    Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
+    Description: A brief description of the Plugin.
+    Version: 0.1
+    Author: PJ Hoberman
+    Author URI: http://URI_Of_The_Plugin_Author
 License: A "Slug" license name e.g. GPL2
 */
 
@@ -25,13 +26,24 @@ License: A "Slug" license name e.g. GPL2
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-function flickr_gallery( $atts ){
-    extract( shortcode_atts( array(
-        'foo' => 'something',
-        'bar' => 'something else',
-    ), $atts ) );
-    
-    return 'test';
+//Todo - better name
+
+function panther_jones_gallery_script(){
+    wp_enqueue_script('panther_jones_gallery_script', plugins_url('gallery.js', __FILE__));
 }
 
-add_shortcode('flickr_gallery', 'flickr_gallery');
+add_action('wp_enqueue_script', 'panther_jones_gallery_script');
+
+function panther_jones_gallery( $atts ){
+    extract( shortcode_atts( array(
+        'source' => 'flickr',
+        'api_key' => '',
+        'set_id' => ''
+    ), $atts ) );
+    
+    $script = plugins_url('gallery.js', __FILE__);
+
+    return $script;
+}
+
+add_shortcode('panther_jones_gallery', 'panther_jones_gallery');
