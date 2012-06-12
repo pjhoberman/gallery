@@ -1,10 +1,13 @@
 Todo
 ----
 
- * preload images -- all the images? some of them?
- * make slider slide
- * if hashed image, make sure that image on the slider is visible
  * Check out scroll bars in various browsers
- * slideshow
- * make it possible to scroll left and right with a hover
  * style it up
+
+ * don't use index - use something else to signify hashes, in case of api change
+ * Check the comments for things to fix
+ * link to the big pic, either to bigger pic, or to next pic
+
+ * changing direction on slider doesn't work well in wordpress yet
+ * big arrow to move big picture? 
+ * turn api_key into a plugin option, rather than a shortcode option

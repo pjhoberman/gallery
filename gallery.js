@@ -1,14 +1,13 @@
 /* Todo:
  * Check out scroll bars in various browsers
  * style it up
- * wordpress gallery
  * don't use index - use something else to signify hashes, in case of api change
  * Check the comments for things to fix
  * add a link to the big pic
 
- * override css
- * changing direction doesn't work well
+ * changing direction on slider doesn't work well in wordpress yet
  * big arrow to move big picture? 
+ * turn api_key into a plugin option, rather than a shortcode option
 */
 
 var gallery; // make this anon?
