@@ -4,7 +4,7 @@
     Plugin Name: Panther Jones Photo Gallery
     Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
     Description: A brief description of the Plugin.
-    Version: 0.1
+    Version: 0.5
     Author: PJ Hoberman
     Author URI: http://URI_Of_The_Plugin_Author
 License: A "Slug" license name e.g. GPL2
