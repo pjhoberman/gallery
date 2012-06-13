@@ -28,7 +28,7 @@ $thumb-height: 150px;
             max-width: $gallery-width;
             }
         }
-    
+
     .slider {
         position: relative;
         overflow: auto;
@@ -37,14 +37,29 @@ $thumb-height: 150px;
         height: $thumb-height + 10px;
         white-space: nowrap;
         background-color: white;
-        
+
+        .go {
+            width: 25px;
+            background-color: black;
+            position: absolute;
+            height: $thumb-height + 10px;
+        }
+
+        .go-left {
+            left:0;
+            margin-right:3px;
+            cursor: w-resize;
+        }
+
+        .go-right {
+            right:0;
+            margin-left:3px;
+            cursor: e-resize;
+        }
+
         img {
             max-height: $thumb-height;
             border: solid 3px white;
-            /*
-border-top: none;
-            border-bottom: none;
-*/
             margin: 3px 1px;
             &.selected-image {
                 border-color: black;

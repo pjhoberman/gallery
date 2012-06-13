@@ -24,13 +24,22 @@
     height: 160px;
     white-space: nowrap;
     background-color: white; }
+    #gallery .slider .go {
+      width: 25px;
+      background-color: black;
+      position: absolute;
+      height: 160px; }
+    #gallery .slider .go-left {
+      left: 0;
+      margin-right: 3px;
+      cursor: w-resize; }
+    #gallery .slider .go-right {
+      right: 0;
+      margin-left: 3px;
+      cursor: e-resize; }
     #gallery .slider img {
       max-height: 150px;
       border: solid 3px white;
-            /*
-border-top: none;
-            border-bottom: none;
-*/
       margin: 3px 1px; }
       #gallery .slider img.selected-image {
         border-color: black; }

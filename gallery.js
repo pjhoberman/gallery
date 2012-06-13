@@ -6,7 +6,7 @@
  * add a link to the big pic
 
  * changing direction on slider doesn't work well in wordpress yet
- * big arrow to move big picture? 
+ * big arrow to move big picture?
  * turn api_key into a plugin option, rather than a shortcode option
 */
 
@@ -30,10 +30,6 @@ var Gallery = function (gallery_id) {
     this.set_id = this.gallery_id_jq.attr('data-set-id');
     this.slideshow_speed = this.gallery_id_jq.attr('data-slideshow-speed');
 
-    /* Options
-        source - required. options are wordpress, flickr
-    */
-
     this.images = [];
 
     var flickr_api_url = "http://api.flickr.com/services/rest/?callback=?";
@@ -47,9 +43,9 @@ var Gallery = function (gallery_id) {
                         api_key: this.api_key,
                         photoset_id: this.set_id,
                         format: 'json',
-                        jsoncallback: 'gallery.ajaxFlickrImages' // todo: this is an issue. 
-                        };     
-                
+                        jsoncallback: 'gallery.ajaxFlickrImages' // todo: this is an issue.
+                        };
+
                 jQuery.getJSON(flickr_api_url, qs);
             // }; // flickrAPI
         }
@@ -58,10 +54,10 @@ var Gallery = function (gallery_id) {
             // do stuff
         }
     }; // loadImages
-    
+
     // allow for more than just flickr?
     this.ajaxFlickrImages = function (data) {
-        
+
 
         if( data.stat === "ok" ){
             var imgs = data.photoset.photo,
@@ -77,15 +73,15 @@ var Gallery = function (gallery_id) {
                     };
                 this.images.push({id: imgs[i].id, title: imgs[i].title});
                 jQuery.getJSON(flickr_api_url, qs);
-                
+
             } // for
         } else {
             // ruh roh
             console.log("There was an oopsie!");
             console.log(data);
         }
-    }; // ajaxFlickrImages    
-    
+    }; // ajaxFlickrImages
+
     this.addFlickrImage = function(data){
 
         if(data.stat === "ok"){
@@ -99,27 +95,27 @@ var Gallery = function (gallery_id) {
                 if(this.images[i].id === id)
                     index = i;
             } // for
-            
+
             d = this.images[index];
 
             for(j; j<data.sizes.size.length; j++){
                 if(data.sizes.size[j].label === "Thumbnail"){
                     d.thumb = data.sizes.size[j].source;
                 }
-                
+
                 else if(data.sizes.size[j].label === "Large") { // catch this if there isn't one and go bigger
                     d.full = data.sizes.size[j].source;
                 }
             } // for
-            
+
         } // if
-        
+
         this.checkForDoneLoading();
     }; // addFlickrImage
-    
+
     this.checkForDoneLoading = function () {
         // gotta be a better way
-        // this assumes every image loads... gotta be a better way!  
+        // this assumes every image loads... gotta be a better way!
         var i = 0,
             c = 0;
         for(i; i<this.images.length; i++){
@@ -131,12 +127,12 @@ var Gallery = function (gallery_id) {
             this.createGallery();
             preloadImages();
     }; // checkForDoneLoading
-    
+
     this.createGallery = function () {
         // create the general dom
         // todo - #gallery => abstract?
-        this.gallery_id_jq.append('<div id="gallery"><div class="slideshow">Start Slideshow</div><div class="big-pic"></div><div class="slider"></div></div>');
-        
+        this.gallery_id_jq.append('<div id="gallery"><div class="slideshow">Start Slideshow</div><div class="big-pic"></div>div class="go go-left"></div><div class="go go-right"></div><div class="slider"><</div></div>');
+
         // which image should we use
         var index = 0,
             hash;
@@ -167,7 +163,7 @@ var Gallery = function (gallery_id) {
 
             if (img.link)
                 el.attr('data-link', img.link);
-                
+
             el.attr('data-index', i).attr('data-full', img.full);
 
             jQuery('#gallery .slider').append(el);
@@ -175,7 +171,7 @@ var Gallery = function (gallery_id) {
         } // for
 
         jQuery('#gallery .slider img:eq(' + index + ')').addClass('selected-image');
-        
+
         // better way?
         setTimeout(function(){
                 jQuery('#gallery .slider').scrollLeft(jQuery('#gallery .slider .selected-image').offset()['left']);
@@ -188,35 +184,54 @@ var Gallery = function (gallery_id) {
             _this.changeBigPic(jQuery(this));
         });
 
+
+
         // slider craziness
-        jQuery('#gallery .slider').bind('mousemove mouseover', function(e){    
-        
-            var position = getMousePosition(e),
-                slider = jQuery('#gallery .slider'),
-                speed = 20;
-            
-            if(position[0] < (slider.width() * .25)){
-                slider.scrollLeft(slider.scrollLeft() - speed);
-                jQuery(this).css({cursor:'w-resize'});
-            } else if( position[0] > (slider.width() * .75)) {
-                slider.scrollLeft(slider.scrollLeft() + speed);
-                jQuery(this).css({cursor:'e-resize'});
-            } else {
-                jQuery(this).css({cursor:'pointer'});
-            }
+        var slider = jQuery('#gallery .slider'),
+            speed = 20;
+
+
+        jQuery('#gallery .slider .go-left').bind('mousemove mouseover', function(e){
+            slider.scrollLeft(slider.scrollLeft() - speed);
         });
-        
+
+        jQuery('#gallery .slider .go-right').bind('mousemove mouseover', function(e){
+            slider.scrollLeft(slider.scrollLeft() + speed);
+        });
+
+        // jQuery('#gallery .slider').bind('mousemove mouseover', function(e){
+
+        //     var position = getMousePosition(e),
+        //         slider = jQuery('#gallery .slider'),
+        //         slider_offset_left = slider.offset()['left'],
+        //         speed = 20;
+
+        //     if(position[0] < slider_offset_left + (slider.width() * .25)){
+        //         slider.scrollLeft(slider.scrollLeft() - speed);
+        //         jQuery(this).css({cursor:'w-resize'});
+        //     }
+
+        //     else if( position[0] > slider_offset_left + (slider.width() * .75)) {
+        //         slider.scrollLeft(slider.scrollLeft() + speed);
+        //         jQuery(this).css({cursor:'e-resize'});
+        //     }
+
+        //     else {
+        //         jQuery(this).css({cursor:'pointer'});
+        //     }
+        // });
+
         // bind slideshow
         bindSlideshow();
     };
-    
-    // this might be too slow... and mean for mobile 
+
+    // this might be too slow... and mean for mobile
     var preloadImages = function (){
         for( var i=0; i<_this.images.length; i++){
             jQuery('<img/>').src = _this.images[i].full;
         } // for
     }; // preloadImages
-    
+
     this.changeBigPic = function (img) {
         // center vertically
         jQuery('#gallery .big-pic img').fadeOut(function(){
@@ -235,7 +250,7 @@ var Gallery = function (gallery_id) {
 
         jQuery('#gallery .big-pic img').css({marginTop:margin});
     };
-    
+
     var getMousePosition = function (e){
         var posx = 0;
     	var posy = 0;
@@ -254,28 +269,28 @@ var Gallery = function (gallery_id) {
     	// Do something with this information
         return [posx, posy];
     };
-    
+
     var bindSlideshow = function () {
         jQuery('#gallery .slideshow').one('click', function(){
             _this.startSlideshow();
-            
+
             jQuery('#gallery .slideshow').one('click', function(){
                 _this.stopSlideshow();
             });
         });
-        
+
     }; // bindSlideshow
-    
+
     this.startSlideshow = function () {
         jQuery('#gallery .slideshow').text('Stop Slideshow');
-        
+
         // preload the second image
         jQuery('<img/>').src = jQuery('#gallery .slider img:eq(1)').attr('data-full');
-        
+
         // start at 0 -- why?
         // jQuery('#gallery .slider').scrollLeft(0);
         // jQuery('#gallery .slider img:first').click();
-        
+
         _this.slideshow = setInterval(function(){
             var next = jQuery('#gallery .slider .selected-image').next();
 
@@ -289,14 +304,14 @@ var Gallery = function (gallery_id) {
             }
         }, _this.slideshow_speed); // make this a global var for settings
     }; // startSlideshow
-    
+
     this.stopSlideshow = function () {
         jQuery('#gallery .slideshow').text('Start Slideshow');
         clearInterval(this.slideshow);
         bindSlideshow();
-        
+
     };
-    
+
     // init functions
     this.loadImages();
     //this.createGallery();
